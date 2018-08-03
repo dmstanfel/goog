@@ -44,7 +44,6 @@
 #    (int list) banana_list = [1, 7, 3, 21, 13, 19]
 # Output:
 #    (int) 0
-import math
 
 def power(a):
     plus = a + 1
@@ -53,7 +52,6 @@ def power(a):
             return False
         plus = plus / 2
     return True
-
 
 def isSpecial(m, n):
     X = m / n
@@ -89,10 +87,12 @@ def make_graph(banana_list):
 def answer(banana_list):
     graph = make_graph(banana_list)
     counts = {x:len(graph[x]) for x in graph}
-    print(graph)
-    print(counts)
     unoccupied = len(banana_list)
-    
-
-banana_list = [1,3,7,21,19,13]
+    paired = []
+    while len(paired) < len(banana_list):
+        fewest = min(counts, key=counts.get)
+        if len(graph[fewest]) == 0:
+            paired.append(fewest)
+    print(min(counts, key=counts.get))
+banana_list = [1,7]
 answer(banana_list)
