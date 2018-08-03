@@ -44,3 +44,55 @@
 #    (int list) banana_list = [1, 7, 3, 21, 13, 19]
 # Output:
 #    (int) 0
+import math
+
+def power(a):
+    plus = a + 1
+    while (plus != 1):
+        if (plus % 2 != 0):
+            return False
+        plus = plus / 2
+    return True
+
+
+def isSpecial(m, n):
+    X = m / n
+    powerof = X.bit_length() - 1 if power(X - 1) and X != 1 else X.bit_length()
+    if m == (n * ((2**powerof) -1)) + 2**powerof:
+        return True
+    return False
+
+def between(a, b):
+    m = max(a,b)
+    n = min(a,b)
+    mod = m % n
+    if mod == 0 and power(m / n):
+        return False
+    elif power(n) and isSpecial(m, n):
+        return False
+    return True
+
+def make_graph(banana_list):
+    graph = { banana: [] for banana in banana_list }
+    i = 1
+    j = 0
+    for banana in banana_list:
+        for x in range(i, len(banana_list)):
+            if banana_list[x] != banana and between(banana_list[x], banana):
+                graph[banana].append(banana_list[x])
+                graph[banana_list[x]].append(banana)
+            j += 1
+        i += 1
+    return graph
+
+
+def answer(banana_list):
+    graph = make_graph(banana_list)
+    counts = {x:len(graph[x]) for x in graph}
+    print(graph)
+    print(counts)
+    unoccupied = len(banana_list)
+    
+
+banana_list = [1,3,7,21,19,13]
+answer(banana_list)
