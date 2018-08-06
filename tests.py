@@ -1,5 +1,5 @@
 import unittest
-from goog4_2 import power, between, isSpecial
+from goog4_2 import power, between, isSpecial, Graph, make_graph, gcd
 
 class TestGoog(unittest.TestCase):
 
@@ -38,6 +38,19 @@ class TestGoog(unittest.TestCase):
         self.assertTrue(isSpecial(9, 7))
         self.assertTrue(isSpecial(5, 3))
         self.assertTrue(isSpecial(17,15))
+
+    def testgraph(self):
+        A = Graph([1,1])
+        B = Graph([1,7,3,19,21,13])
+        C = make_graph([1,1])
+        D = make_graph([1,7,3,19,21,13])
+        print(A.graph)
+        print(gcd(64,16))
+        print(C)
+        print(B.graph)
+        print(D)
+        self.assertEqual(A.length, 2)
+        self.assertEqual(B.length, 6)
 
 if __name__ =='__main__':
     unittest.main()

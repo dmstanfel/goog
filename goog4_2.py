@@ -44,6 +44,31 @@
 #    (int list) banana_list = [1, 7, 3, 21, 13, 19]
 # Output:
 #    (int) 0
+class Graph:
+    def __init__(self, banana_list):
+        self.length = len(banana_list)
+        self.graph = list([0]*self.length for i in xrange(self.length))
+        for i in xrange(self.length):
+            for j in xrange(self.length):
+                if i < j: 
+                    self.graph[i][j] = dead_lock(banana_list[i], banana_list[j])
+                    self.graph[j][i] = self.graph[i][j] 
+
+
+def gcd(a, b):
+    while(b):
+        a, b = b, a % b
+    return a
+
+def dead_lock(a, b):
+    if a == b:
+        return 0
+    denom = gcd(a,b)
+    if (a + b) % 2 == 1:
+        return 1
+    a, b = a/denom, b/denom
+    a, b = max(a, b), min(a, b)    
+    return dead_lock(a - b,2 * b)
 
 def power(a):
     plus = a + 1
@@ -71,16 +96,12 @@ def between(a, b):
     return True
 
 def make_graph(banana_list):
-    graph = { banana: [] for banana in banana_list }
-    i = 1
-    j = 0
-    for banana in banana_list:
-        for x in range(i, len(banana_list)):
-            if banana_list[x] != banana and between(banana_list[x], banana):
-                graph[banana].append(banana_list[x])
-                graph[banana_list[x]].append(banana)
-            j += 1
-        i += 1
+    graph = [[0]*len(banana_list) for i in xrange(len(banana_list))]
+    for i in xrange(len(banana_list)):
+        for j in xrange(i, len(banana_list)):
+            if banana_list[j] != banana_list[i] and between(banana_list[i], banana_list[j]):
+                graph[i][j] = 1
+                graph[j][i] = graph[i][j]
     return graph
 
 
@@ -89,10 +110,10 @@ def answer(banana_list):
     counts = {x:len(graph[x]) for x in graph}
     unoccupied = len(banana_list)
     paired = []
-    while len(paired) < len(banana_list):
-        fewest = min(counts, key=counts.get)
-        if len(graph[fewest]) == 0:
-            paired.append(fewest)
-    print(min(counts, key=counts.get))
+    #while len(paired) < len(banana_list):
+    #    fewest = min(counts, key=counts.get)
+    #    if len(graph[fewest]) == 0:
+    #        paired.append(fewest)
+    #print(min(counts, key=counts.get))
 banana_list = [1,7]
-answer(banana_list)
+#answer(banana_list)
