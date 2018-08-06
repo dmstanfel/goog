@@ -49,10 +49,9 @@ class Graph:
         self.length = len(banana_list)
         self.graph = list([0]*self.length for i in xrange(self.length))
         for i in xrange(self.length):
-            for j in xrange(self.length):
-                if i < j: 
-                    self.graph[i][j] = dead_lock(banana_list[i], banana_list[j])
-                    self.graph[j][i] = self.graph[i][j] 
+            for j in xrange(i, self.length):
+                self.graph[i][j] = dead_lock(banana_list[i], banana_list[j])
+                self.graph[j][i] = self.graph[i][j] 
 
 
 def gcd(a, b):
