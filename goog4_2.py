@@ -47,19 +47,18 @@
 class Graph:
     def __init__(self, banana_list):
         self.length = len(banana_list)
-        self.graph = list([0]*self.length for i in xrange(self.length))
-        for i in xrange(self.length):
-            for j in xrange(i, self.length):
-                self.graph[i][j] = dead_lock(banana_list[i], banana_list[j])
+        self.graph = [[0]*self.length for i in range(self.length)]
+        for i in range(self.length):
+            for j in range(i, self.length):
+                self.graph[i][j] = game(banana_list[i], banana_list[j])
                 self.graph[j][i] = self.graph[i][j] 
-
 
 def gcd(a, b):
     while(b):
         a, b = b, a % b
     return a
 
-def dead_lock(a, b):
+def game(a, b):
     if a == b:
         return 0
     denom = gcd(a,b)
@@ -67,52 +66,35 @@ def dead_lock(a, b):
         return 1
     a, b = a/denom, b/denom
     a, b = max(a, b), min(a, b)    
-    return dead_lock(a - b,2 * b)
+    return game(a - b, 2 * b)
 
-def power(a):
-    plus = a + 1
-    while (plus != 1):
-        if (plus % 2 != 0):
-            return False
-        plus = plus / 2
-    return True
+def bfs_match(i, graph, visited):
+    search_depth = 1
+    visited[i] = True
+    queue = [i]
+    while queue:
+        focus = queue.pop(0)
+        for u in range(graph.length):
+            if graph.graph[focus][u] and visited[u] == False:
+                search_depth += 1
+                queue.append(u)
+                visited[u] = True
+    return graph.length - (2*(search_depth / 2))
 
-def isSpecial(m, n):
-    X = m / n
-    powerof = X.bit_length() - 1 if power(X - 1) and X != 1 else X.bit_length()
-    if m == (n * ((2**powerof) -1)) + 2**powerof:
-        return True
-    return False
-
-def between(a, b):
-    m = max(a,b)
-    n = min(a,b)
-    mod = m % n
-    if mod == 0 and power(m / n):
-        return False
-    elif power(n) and isSpecial(m, n):
-        return False
-    return True
-
-def make_graph(banana_list):
-    graph = [[0]*len(banana_list) for i in xrange(len(banana_list))]
-    for i in xrange(len(banana_list)):
-        for j in xrange(i, len(banana_list)):
-            if banana_list[j] != banana_list[i] and between(banana_list[i], banana_list[j]):
-                graph[i][j] = 1
-                graph[j][i] = graph[i][j]
-    return graph
-
+def pairings(graph):
+    unoccupied = graph.length
+    for i in range(graph.length):
+        visited = [False] * graph.length
+        count = bfs_match(i, graph, visited)
+        if count < unoccupied:
+            unoccupied = count
+    return unoccupied
 
 def answer(banana_list):
-    graph = make_graph(banana_list)
-    counts = {x:len(graph[x]) for x in graph}
-    unoccupied = len(banana_list)
-    paired = []
-    #while len(paired) < len(banana_list):
-    #    fewest = min(counts, key=counts.get)
-    #    if len(graph[fewest]) == 0:
-    #        paired.append(fewest)
-    #print(min(counts, key=counts.get))
-banana_list = [1,7]
-#answer(banana_list)
+    graph = Graph(banana_list)
+    return pairings(graph)
+
+if __name__ == '__main__':
+    banana_list = [1,7,3,21] 
+    print(game(1,21)) 
+    print(answer(banana_list))
