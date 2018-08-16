@@ -68,33 +68,28 @@ def game(a, b):
     a, b = max(a, b), min(a, b)    
     return game(a - b, 2 * b)
 
-def bfs_match(i, graph, visited):
-    search_depth = 1
-    visited[i] = True
-    queue = [i]
-    while queue:
-        focus = queue.pop(0)
-        for u in range(graph.length):
-            if graph.graph[focus][u] and visited[u] == False:
-                search_depth += 1
-                queue.append(u)
-                visited[u] = True
-    return graph.length - (2*(search_depth / 2))
-
-def pairings(graph):
-    unoccupied = graph.length
+def dfs(graph):
+    parent = [None] * graph.length
+    count_pairings = 0
     for i in range(graph.length):
         visited = [False] * graph.length
-        count = bfs_match(i, graph, visited)
-        if count < unoccupied:
-            unoccupied = count
-    return unoccupied
+        if dfs_visit(graph, i, visited, parent):
+            count_pairings += 1
+    return graph.length - 2 *(count_pairings / 2)
+
+def dfs_visit(graph, i, visited, parent):
+    for u in range(graph.length):
+        if graph.graph[i][u] and visited[u] == False:
+            visited[u] = True
+            if parent[u] == None or dfs_visit(graph, parent[u], visited, parent):
+                parent[u] = i
+                return True
+    return False
 
 def answer(banana_list):
     graph = Graph(banana_list)
-    return pairings(graph)
+    return dfs(graph)
 
 if __name__ == '__main__':
-    banana_list = [1,7,3,21] 
-    print(game(1,21)) 
+    banana_list = [1,7,3]  
     print(answer(banana_list))
